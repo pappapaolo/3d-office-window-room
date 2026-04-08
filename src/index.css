@@ -1,0 +1,40 @@
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --display-font: 'Cormorant Garamond', 'Iowan Old Style', 'Palatino Linotype',
+    serif;
+  --body-font: 'Fraunces', 'Georgia', serif;
+  --ink: #41261a;
+  --muted: rgba(96, 59, 39, 0.64);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--body-font);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(146, 84, 47, 0.92);
+  outline-offset: 2px;
+}
