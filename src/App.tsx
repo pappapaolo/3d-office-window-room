@@ -21,7 +21,7 @@ function App() {
   )
   const [lampOn, setLampOn] = useState(true)
   const [parallaxStrength, setParallaxStrength] = useState(0.72)
-  const [zoom, setZoom] = useState(0.38)
+  const [zoom, setZoom] = useState(0.26)
   const [effectsEnabled, setEffectsEnabled] = useState(true)
   const [showDebug, setShowDebug] = useState(false)
   const lighting = sampleLighting(timeValue)
@@ -142,6 +142,21 @@ function App() {
                 onChange={handleSliderChange}
               />
             </label>
+
+            <label className="slider-field">
+              <span>
+                Zoom
+                <strong>{zoom.toFixed(2)}</strong>
+              </span>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={zoom}
+                onChange={(event) => setZoom(Number(event.target.value))}
+              />
+            </label>
           </div>
 
           <div className="panel-group">
@@ -158,21 +173,6 @@ function App() {
 
             {showDebug ? (
               <div className="debug-grid">
-                <label className="slider-field">
-                  <span>
-                    Zoom
-                    <strong>{zoom.toFixed(2)}</strong>
-                  </span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={zoom}
-                    onChange={(event) => setZoom(Number(event.target.value))}
-                  />
-                </label>
-
                 <label className="slider-field">
                   <span>
                     Parallax

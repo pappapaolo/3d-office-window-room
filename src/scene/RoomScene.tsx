@@ -213,7 +213,7 @@ function CameraRig({
 
   useFrame((_, delta) => {
     const strength = isTouch ? parallaxStrength * 0.22 : parallaxStrength * 0.5
-    const distance = THREE.MathUtils.lerp(10.8, 7.4, zoom)
+    const distance = THREE.MathUtils.lerp(11.8, 7.8, zoom)
     const targetPosition = new THREE.Vector3(
       pointer.x * strength,
       1.78 + pointer.y * strength * 0.45,
@@ -977,7 +977,7 @@ export function RoomScene({ config, onLampToggle }: RoomSceneProps) {
     <Canvas
       shadows
       dpr={[1, 1.75]}
-      camera={{ position: [0, 1.78, 9.4], fov: 36 }}
+      camera={{ position: [0, 1.78, 10.4], fov: 36 }}
       gl={{ antialias: true }}
     >
       <SceneContents config={config} onLampToggle={onLampToggle} />
