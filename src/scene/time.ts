@@ -8,6 +8,7 @@ export interface SceneConfig {
   parallaxStrength: number
   zoom: number
   effectsEnabled: boolean
+  lampOn: boolean
 }
 
 export interface LightingSample {

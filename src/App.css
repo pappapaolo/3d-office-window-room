@@ -12,6 +12,18 @@
   overflow: hidden;
 }
 
+.scene-lamp-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 69% 30%, rgba(255, 220, 155, 0.42), transparent 16%),
+    radial-gradient(circle at 67% 38%, rgba(255, 191, 102, 0.16), transparent 38%);
+  mix-blend-mode: screen;
+  transition: opacity 280ms ease;
+  z-index: 1;
+}
+
 .scene-canvas {
   position: absolute;
   inset: 0;
@@ -45,6 +57,7 @@
     0 24px 50px rgba(76, 43, 27, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(18px);
+  z-index: 2;
 }
 
 .panel-copy,

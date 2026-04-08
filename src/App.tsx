@@ -6,6 +6,7 @@ import {
   PRESET_VALUES,
   getPresetFromValue,
   getTimeValueFromDate,
+  sampleLighting,
   type TimeMode,
   type TimePreset,
 } from './scene/time'
@@ -18,10 +19,13 @@ function App() {
   const [activePreset, setActivePreset] = useState<TimePreset | null>(() =>
     getPresetFromValue(getTimeValueFromDate(new Date())),
   )
+  const [lampOn, setLampOn] = useState(true)
   const [parallaxStrength, setParallaxStrength] = useState(0.72)
   const [zoom, setZoom] = useState(0.38)
   const [effectsEnabled, setEffectsEnabled] = useState(true)
   const [showDebug, setShowDebug] = useState(false)
+  const lighting = sampleLighting(timeValue)
+  const lampOverlay = lampOn ? lighting.practicalIntensity * 0.16 : 0
 
   useEffect(() => {
     if (timeMode !== 'auto') {
@@ -68,17 +72,24 @@ function App() {
   return (
     <main className="app-shell">
       <div className="scene-frame">
+        <div
+          className="scene-lamp-wash"
+          style={{ opacity: lampOverlay }}
+          aria-hidden="true"
+        />
         <div className="scene-canvas">
           <RoomScene
             config={{
               timeMode,
               timeValue,
-            activePreset,
-            parallaxStrength,
-            zoom,
-            effectsEnabled,
-          }}
-        />
+              activePreset,
+              parallaxStrength,
+              zoom,
+              effectsEnabled,
+              lampOn,
+            }}
+            onLampToggle={() => setLampOn((value) => !value)}
+          />
         </div>
         <section className="control-panel">
           <div className="panel-copy">
@@ -197,6 +208,7 @@ function App() {
               <li>Click the lamp to toggle practical light.</li>
               <li>Click the monitor to cycle its screen glow.</li>
               <li>Click the dinosaur to make it perk up and roar.</li>
+              <li>Click the bot and plant, or drag the loose books.</li>
             </ul>
           </div>
         </section>
