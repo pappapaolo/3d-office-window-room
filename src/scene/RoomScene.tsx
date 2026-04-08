@@ -236,8 +236,8 @@ function WindowAssembly({
   return (
     <group position={[0, 3.52, -1.2]}>
       <group ref={group} position={[0, 0, 0]}>
-        <mesh position={[0, 0, -0.68]} scale={[1.02, 1.02, 1]}>
-          <planeGeometry args={[9.2, 6.9]} />
+        <mesh position={[0, 0, -0.46]} scale={[1.02, 1.02, 1]}>
+          <planeGeometry args={[8.98, 6.52]} />
           <meshBasicMaterial
             map={textures[baseIndex]}
             toneMapped={false}
@@ -246,8 +246,8 @@ function WindowAssembly({
           />
         </mesh>
 
-        <mesh position={[0.08, 0.03, -0.72]} scale={[1.03, 1.03, 1]}>
-          <planeGeometry args={[9.26, 6.94]} />
+        <mesh position={[0.08, 0.03, -0.5]} scale={[1.03, 1.03, 1]}>
+          <planeGeometry args={[9.02, 6.56]} />
           <meshBasicMaterial
             map={textures[nextIndex]}
             toneMapped={false}
@@ -260,50 +260,45 @@ function WindowAssembly({
       <mesh position={[0, 0, -0.2]}>
         <planeGeometry args={[8.92, 5.88]} />
         <meshPhysicalMaterial
-          transmission={0.35}
-          roughness={0.24}
+          transmission={0.22}
+          roughness={0.12}
           thickness={0.32}
-          color={lighting.glow}
+          color="#ffffff"
           transparent
-          opacity={0.18}
+          opacity={0.1}
         />
       </mesh>
 
       <mesh position={[0, 0.08, -0.08]}>
         <planeGeometry args={[8.92, 5.88]} />
-        <meshBasicMaterial color={lighting.haze} transparent opacity={0.055} />
+        <meshBasicMaterial color={lighting.haze} transparent opacity={0.025} />
       </mesh>
 
       <mesh position={[0, 0, -0.16]}>
         <planeGeometry args={[8.92, 5.88]} />
-        <meshBasicMaterial color={lighting.glow} transparent opacity={0.06} />
+        <meshBasicMaterial color={lighting.glow} transparent opacity={0.03} />
       </mesh>
 
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[9.62, 6.34, 0.16]} />
-        <meshStandardMaterial color={lighting.frame} roughness={0.58} />
-      </mesh>
-
-      <mesh position={[0, 3.03, 0.16]}>
-        <boxGeometry args={[8.96, 0.18, 0.12]} />
+      <mesh position={[0, 3.12, 0.12]}>
+        <boxGeometry args={[9.62, 0.24, 0.18]} />
         <meshStandardMaterial color={lighting.frame} roughness={0.55} />
       </mesh>
-      <mesh position={[0, -3.03, 0.16]}>
-        <boxGeometry args={[8.96, 0.18, 0.12]} />
+      <mesh position={[0, -3.12, 0.12]}>
+        <boxGeometry args={[9.62, 0.24, 0.18]} />
         <meshStandardMaterial color={lighting.frame} roughness={0.55} />
       </mesh>
-      <mesh position={[-4.39, 0, 0.16]}>
-        <boxGeometry args={[0.18, 5.88, 0.12]} />
+      <mesh position={[-4.81, 0, 0.12]}>
+        <boxGeometry args={[0.24, 6.34, 0.18]} />
         <meshStandardMaterial color={lighting.frame} roughness={0.55} />
       </mesh>
-      <mesh position={[4.39, 0, 0.16]}>
-        <boxGeometry args={[0.18, 5.88, 0.12]} />
+      <mesh position={[4.81, 0, 0.12]}>
+        <boxGeometry args={[0.24, 6.34, 0.18]} />
         <meshStandardMaterial color={lighting.frame} roughness={0.55} />
       </mesh>
 
       {[-2.98, 0, 2.98].map((x) => (
-        <mesh key={x} position={[x, 0, 0.2]}>
-          <boxGeometry args={[0.1, 5.88, 0.12]} />
+        <mesh key={x} position={[x, 0, 0.18]}>
+          <boxGeometry args={[0.1, 6.04, 0.12]} />
           <meshStandardMaterial color={lighting.frame} roughness={0.5} />
         </mesh>
       ))}
