@@ -166,13 +166,13 @@ function RoomShell({ lighting }: { lighting: LightingSample }) {
         <meshStandardMaterial color="#604232" roughness={1} />
       </mesh>
 
-      <mesh position={[0, 0.58, 1.2]} receiveShadow castShadow>
+      <mesh position={[0, 0.3, 1.2]} receiveShadow castShadow>
         <boxGeometry args={[16, 0.25, 3.2]} />
         <meshStandardMaterial color={lighting.shelfTop} roughness={0.7} />
       </mesh>
 
-      <mesh position={[0, -0.34, 0.95]} receiveShadow>
-        <boxGeometry args={[16, 1.55, 3.8]} />
+      <mesh position={[0, -0.78, 0.95]} receiveShadow>
+        <boxGeometry args={[16, 0.95, 3.8]} />
         <meshStandardMaterial color={lighting.shelfFront} roughness={0.88} />
       </mesh>
 
@@ -234,10 +234,10 @@ function WindowAssembly({
   })
 
   return (
-    <group position={[0, 4.25, -1.2]}>
+    <group position={[0, 3.52, -1.2]}>
       <group ref={group} position={[0, 0, 0]}>
         <mesh position={[0, 0, -0.68]} scale={[1.02, 1.02, 1]}>
-          <planeGeometry args={[8.92, 6.66]} />
+          <planeGeometry args={[9.2, 6.9]} />
           <meshBasicMaterial
             map={textures[baseIndex]}
             toneMapped={false}
@@ -247,7 +247,7 @@ function WindowAssembly({
         </mesh>
 
         <mesh position={[0.08, 0.03, -0.72]} scale={[1.03, 1.03, 1]}>
-          <planeGeometry args={[8.98, 6.7]} />
+          <planeGeometry args={[9.26, 6.94]} />
           <meshBasicMaterial
             map={textures[nextIndex]}
             toneMapped={false}
@@ -258,7 +258,7 @@ function WindowAssembly({
       </group>
 
       <mesh position={[0, 0, -0.2]}>
-        <planeGeometry args={[8.82, 5.57]} />
+        <planeGeometry args={[8.92, 5.88]} />
         <meshPhysicalMaterial
           transmission={0.35}
           roughness={0.24}
@@ -270,40 +270,47 @@ function WindowAssembly({
       </mesh>
 
       <mesh position={[0, 0.08, -0.08]}>
-        <planeGeometry args={[8.82, 5.57]} />
+        <planeGeometry args={[8.92, 5.88]} />
         <meshBasicMaterial color={lighting.haze} transparent opacity={0.055} />
       </mesh>
 
       <mesh position={[0, 0, -0.16]}>
-        <planeGeometry args={[8.82, 5.57]} />
+        <planeGeometry args={[8.92, 5.88]} />
         <meshBasicMaterial color={lighting.glow} transparent opacity={0.06} />
       </mesh>
 
       <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[9.28, 5.98, 0.16]} />
+        <boxGeometry args={[9.62, 6.34, 0.16]} />
         <meshStandardMaterial color={lighting.frame} roughness={0.58} />
       </mesh>
 
-      <mesh position={[0, 0, 0.11]}>
-        <boxGeometry args={[8.86, 5.58, 0.08]} />
-        <meshStandardMaterial color="#2a1510" roughness={0.8} />
+      <mesh position={[0, 3.03, 0.16]}>
+        <boxGeometry args={[8.96, 0.18, 0.12]} />
+        <meshStandardMaterial color={lighting.frame} roughness={0.55} />
       </mesh>
-
-      <mesh position={[0, 0, 0.16]}>
-        <boxGeometry args={[8.56, 5.28, 0.08]} />
+      <mesh position={[0, -3.03, 0.16]}>
+        <boxGeometry args={[8.96, 0.18, 0.12]} />
+        <meshStandardMaterial color={lighting.frame} roughness={0.55} />
+      </mesh>
+      <mesh position={[-4.39, 0, 0.16]}>
+        <boxGeometry args={[0.18, 5.88, 0.12]} />
+        <meshStandardMaterial color={lighting.frame} roughness={0.55} />
+      </mesh>
+      <mesh position={[4.39, 0, 0.16]}>
+        <boxGeometry args={[0.18, 5.88, 0.12]} />
         <meshStandardMaterial color={lighting.frame} roughness={0.55} />
       </mesh>
 
-      {[-2.86, 0, 2.86].map((x) => (
+      {[-2.98, 0, 2.98].map((x) => (
         <mesh key={x} position={[x, 0, 0.2]}>
-          <boxGeometry args={[0.09, 5.28, 0.12]} />
+          <boxGeometry args={[0.1, 5.88, 0.12]} />
           <meshStandardMaterial color={lighting.frame} roughness={0.5} />
         </mesh>
       ))}
 
-      {[-1.76, 0, 1.76].map((y) => (
+      {[-1.96, 0, 1.96].map((y) => (
         <mesh key={y} position={[0, y, 0.2]}>
-          <boxGeometry args={[8.56, 0.09, 0.12]} />
+          <boxGeometry args={[8.92, 0.1, 0.12]} />
           <meshStandardMaterial color={lighting.frame} roughness={0.5} />
         </mesh>
       ))}
@@ -896,7 +903,7 @@ function SceneContents({ config, onLampToggle }: SceneContentsProps) {
       />
       <BookshelfSet />
 
-      <mesh position={[0, 0.72, 0.74]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <mesh position={[0, 0.42, 0.74]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[11.5, 2.2]} />
         <meshStandardMaterial color={lighting.shelfTop} roughness={0.74} />
       </mesh>
@@ -929,7 +936,7 @@ export function RoomScene({ config, onLampToggle }: RoomSceneProps) {
     <Canvas
       shadows
       dpr={[1, 1.75]}
-      camera={{ position: [0, 1.72, 11.4], fov: 38 }}
+      camera={{ position: [0, 2.2, 10.8], fov: 33 }}
       gl={{ antialias: true }}
     >
       <SceneContents config={config} onLampToggle={onLampToggle} />
