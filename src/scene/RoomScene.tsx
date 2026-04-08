@@ -6,6 +6,7 @@ import {
   OrbitControls,
   RoundedBox,
   Sparkles,
+  useTexture,
 } from '@react-three/drei'
 import { Bloom, EffectComposer, Noise, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
@@ -22,6 +23,16 @@ interface SceneContentsProps {
 }
 
 const wallHeight = 8.2
+const windowBackdropSources = [
+  '/assets/window/sunrise.png',
+  '/assets/window/early-gold.png',
+  '/assets/window/clear-day.png',
+  '/assets/window/rainy-day.png',
+  '/assets/window/sunset.png',
+  '/assets/window/misty-evening.png',
+  '/assets/window/rainy-night.png',
+  '/assets/window/super-foggy.png',
+]
 
 function useIsTouchDevice() {
   const [isTouch, setIsTouch] = useState(false)
@@ -92,112 +103,6 @@ function useSoundEffects() {
   }
 }
 
-function createWindowTexture(lighting: LightingSample, timeValue: number) {
-  const canvas = document.createElement('canvas')
-  canvas.width = 1024
-  canvas.height = 768
-  const context = canvas.getContext('2d')
-
-  if (!context) {
-    return new THREE.CanvasTexture(canvas)
-  }
-
-  const gradient = context.createLinearGradient(0, 0, 0, canvas.height)
-  gradient.addColorStop(0, lighting.skyTop)
-  gradient.addColorStop(0.55, lighting.skyBottom)
-  gradient.addColorStop(1, lighting.haze)
-  context.fillStyle = gradient
-  context.fillRect(0, 0, canvas.width, canvas.height)
-
-  const isNight = timeValue > 0.78 || timeValue < 0.18
-  const celestialX = 512 + Math.cos(timeValue * Math.PI * 2) * 280
-  const celestialY = 120 + Math.sin(timeValue * Math.PI * 2) * 80
-  context.fillStyle = isNight ? '#f4f3ff' : lighting.glow
-  context.beginPath()
-  context.arc(celestialX, celestialY, isNight ? 18 : 36, 0, Math.PI * 2)
-  context.fill()
-
-  const bloom = context.createRadialGradient(
-    celestialX,
-    celestialY,
-    20,
-    celestialX,
-    celestialY,
-    isNight ? 120 : 240,
-  )
-  bloom.addColorStop(0, `${lighting.glow}ff`)
-  bloom.addColorStop(1, `${lighting.glow}00`)
-  context.fillStyle = bloom
-  context.fillRect(0, 0, canvas.width, canvas.height)
-
-  context.fillStyle = `${lighting.haze}b8`
-  ;[
-    [180, 132, 170, 38],
-    [420, 104, 230, 48],
-    [780, 148, 180, 42],
-  ].forEach(([x, y, w, h]) => {
-    context.beginPath()
-    context.ellipse(x, y, w, h, 0, 0, Math.PI * 2)
-    context.fill()
-  })
-
-  if (isNight) {
-    context.fillStyle = 'rgba(255,255,255,0.72)'
-    for (let i = 0; i < 42; i += 1) {
-      const x = (i * 137) % canvas.width
-      const y = 42 + ((i * 67) % 220)
-      context.fillRect(x, y, 2, 2)
-    }
-  }
-
-  context.fillStyle = `${lighting.skylineFar}d9`
-  const farBuildings = [
-    [100, 362, 92, 162],
-    [188, 338, 38, 186],
-    [250, 350, 70, 174],
-    [344, 304, 102, 220],
-    [470, 252, 56, 272],
-    [548, 316, 46, 208],
-    [618, 296, 70, 228],
-    [710, 324, 56, 200],
-    [798, 342, 92, 182],
-  ]
-  farBuildings.forEach(([x, y, w, h]) => context.fillRect(x, y, w, h))
-
-  context.fillStyle = `${lighting.skylineNear}ef`
-  const nearBuildings = [
-    [54, 470, 128, 170],
-    [172, 520, 140, 120],
-    [302, 450, 142, 190],
-    [456, 500, 128, 140],
-    [590, 464, 112, 176],
-    [714, 486, 122, 154],
-    [844, 450, 118, 190],
-  ]
-  nearBuildings.forEach(([x, y, w, h]) => context.fillRect(x, y, w, h))
-
-  context.strokeStyle = 'rgba(255,255,255,0.18)'
-  context.lineWidth = 1
-  for (let x = 0; x < canvas.width; x += 24) {
-    context.beginPath()
-    context.moveTo(x, 0)
-    context.lineTo(x, canvas.height)
-    context.stroke()
-  }
-
-  for (let y = 0; y < canvas.height; y += 24) {
-    context.beginPath()
-    context.moveTo(0, y)
-    context.lineTo(canvas.width, y)
-    context.stroke()
-  }
-
-  const texture = new THREE.CanvasTexture(canvas)
-  texture.colorSpace = THREE.SRGBColorSpace
-  texture.needsUpdate = true
-  return texture
-}
-
 function CameraRig({
   parallaxStrength,
   zoom,
@@ -213,16 +118,16 @@ function CameraRig({
 
   useFrame((_, delta) => {
     const strength = isTouch ? parallaxStrength * 0.22 : parallaxStrength * 0.5
-    const distance = THREE.MathUtils.lerp(11.8, 7.8, zoom)
+    const distance = THREE.MathUtils.lerp(13.2, 8.4, zoom)
     const targetPosition = new THREE.Vector3(
       pointer.x * strength,
-      1.78 + pointer.y * strength * 0.45,
+      1.72 + pointer.y * strength * 0.4,
       distance + Math.abs(pointer.x) * strength * 0.18,
     )
 
     perspectiveCamera.position.lerp(targetPosition, 1 - Math.exp(-delta * 2.8))
     focus.lerp(
-      new THREE.Vector3(pointer.x * strength * 0.45, 0.82 + pointer.y * 0.18, 0),
+      new THREE.Vector3(pointer.x * strength * 0.38, 0.74 + pointer.y * 0.14, 0),
       1 - Math.exp(-delta * 2.8),
     )
     perspectiveCamera.lookAt(focus)
@@ -291,19 +196,66 @@ function WindowAssembly({
   lighting: LightingSample
   timeValue: number
 }) {
-  const backdrop = useMemo(
-    () => createWindowTexture(lighting, timeValue),
-    [lighting, timeValue],
-  )
+  const textures = useTexture(windowBackdropSources)
+  const { pointer } = useThree()
+  const group = useRef<THREE.Group>(null)
+  const imageCount = textures.length
+  const scaled = ((timeValue % 1) + 1) % 1 * imageCount
+  const baseIndex = Math.floor(scaled) % imageCount
+  const nextIndex = (baseIndex + 1) % imageCount
+  const blend = scaled - Math.floor(scaled)
 
-  useEffect(() => () => backdrop.dispose(), [backdrop])
+  useMemo(() => {
+    textures.forEach((texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace
+      texture.minFilter = THREE.LinearFilter
+      texture.magFilter = THREE.LinearFilter
+    })
+    return textures
+  }, [textures])
+
+  useFrame((_, delta) => {
+    if (!group.current) {
+      return
+    }
+
+    const targetX = pointer.x * 0.18
+    const targetY = pointer.y * 0.1
+    group.current.position.x = THREE.MathUtils.lerp(
+      group.current.position.x,
+      targetX,
+      1 - Math.exp(-delta * 2.4),
+    )
+    group.current.position.y = THREE.MathUtils.lerp(
+      group.current.position.y,
+      targetY,
+      1 - Math.exp(-delta * 2.4),
+    )
+  })
 
   return (
     <group position={[0, 4.25, -1.2]}>
-      <mesh position={[0, 0, -0.48]}>
-        <planeGeometry args={[8.8, 5.55]} />
-        <meshBasicMaterial map={backdrop} toneMapped={false} />
-      </mesh>
+      <group ref={group} position={[0, 0, 0]}>
+        <mesh position={[0, 0, -0.68]} scale={[1.02, 1.02, 1]}>
+          <planeGeometry args={[8.92, 6.66]} />
+          <meshBasicMaterial
+            map={textures[baseIndex]}
+            toneMapped={false}
+            transparent
+            opacity={1 - blend}
+          />
+        </mesh>
+
+        <mesh position={[0.08, 0.03, -0.72]} scale={[1.03, 1.03, 1]}>
+          <planeGeometry args={[8.98, 6.7]} />
+          <meshBasicMaterial
+            map={textures[nextIndex]}
+            toneMapped={false}
+            transparent
+            opacity={blend}
+          />
+        </mesh>
+      </group>
 
       <mesh position={[0, 0, -0.2]}>
         <planeGeometry args={[8.82, 5.57]} />
@@ -977,7 +929,7 @@ export function RoomScene({ config, onLampToggle }: RoomSceneProps) {
     <Canvas
       shadows
       dpr={[1, 1.75]}
-      camera={{ position: [0, 1.78, 10.4], fov: 36 }}
+      camera={{ position: [0, 1.72, 11.4], fov: 38 }}
       gl={{ antialias: true }}
     >
       <SceneContents config={config} onLampToggle={onLampToggle} />
