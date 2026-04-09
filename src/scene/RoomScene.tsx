@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
   ContactShadows,
-  Float,
   OrbitControls,
   RoundedBox,
   Sparkles,
@@ -88,18 +87,6 @@ function useSoundEffects() {
 
   return {
     lamp: () => pulse(640, 0.08, 'triangle', 0.024),
-    roar: () => {
-      pulse(96, 0.22, 'sawtooth', 0.032)
-      window.setTimeout(() => pulse(84, 0.18, 'square', 0.02), 90)
-    },
-    wave: () => {
-      pulse(520, 0.08, 'sine', 0.018)
-      window.setTimeout(() => pulse(760, 0.08, 'sine', 0.014), 70)
-    },
-    rustle: () => {
-      pulse(260, 0.1, 'triangle', 0.014)
-      window.setTimeout(() => pulse(340, 0.1, 'triangle', 0.01), 40)
-    },
   }
 }
 
@@ -118,16 +105,16 @@ function CameraRig({
 
   useFrame((_, delta) => {
     const strength = isTouch ? parallaxStrength * 0.22 : parallaxStrength * 0.5
-    const distance = THREE.MathUtils.lerp(13.2, 8.4, zoom)
+    const distance = THREE.MathUtils.lerp(14.8, 10.4, zoom)
     const targetPosition = new THREE.Vector3(
-      pointer.x * strength,
-      1.72 + pointer.y * strength * 0.4,
+      pointer.x * strength * 0.78,
+      1.92 + pointer.y * strength * 0.32,
       distance + Math.abs(pointer.x) * strength * 0.18,
     )
 
     perspectiveCamera.position.lerp(targetPosition, 1 - Math.exp(-delta * 2.8))
     focus.lerp(
-      new THREE.Vector3(pointer.x * strength * 0.38, 0.74 + pointer.y * 0.14, 0),
+      new THREE.Vector3(pointer.x * strength * 0.28, 1.02 + pointer.y * 0.18, -0.18),
       1 - Math.exp(-delta * 2.8),
     )
     perspectiveCamera.lookAt(focus)
@@ -234,10 +221,10 @@ function WindowAssembly({
   })
 
   return (
-    <group position={[0, 3.52, -1.2]}>
+    <group position={[0, 3.68, -1.2]}>
       <group ref={group} position={[0, 0, 0]}>
-        <mesh position={[0, 0, -0.46]} scale={[1.02, 1.02, 1]}>
-          <planeGeometry args={[8.98, 6.52]} />
+        <mesh position={[0, 0.08, -0.62]} scale={[1.18, 1.18, 1]}>
+          <planeGeometry args={[10.4, 7.1]} />
           <meshBasicMaterial
             map={textures[baseIndex]}
             toneMapped={false}
@@ -246,8 +233,8 @@ function WindowAssembly({
           />
         </mesh>
 
-        <mesh position={[0.08, 0.03, -0.5]} scale={[1.03, 1.03, 1]}>
-          <planeGeometry args={[9.02, 6.56]} />
+        <mesh position={[0.12, 0.1, -0.66]} scale={[1.2, 1.2, 1]}>
+          <planeGeometry args={[10.4, 7.1]} />
           <meshBasicMaterial
             map={textures[nextIndex]}
             toneMapped={false}
@@ -364,51 +351,15 @@ function Book({
   )
 }
 
-function BookshelfSet() {
-  const lowerBooks = [
-    [-4.2, 1.1, 0.8, 0.24, 1.18, 0.44, '#4f6682', -0.04],
-    [-3.9, 1.07, 0.82, 0.18, 0.98, 0.42, '#d0915f', 0.06],
-    [-3.62, 1.11, 0.82, 0.22, 1.1, 0.46, '#d5b46c', 0.02],
-    [-3.3, 1.12, 0.83, 0.26, 1.3, 0.48, '#793d2e', -0.08],
-    [-2.98, 1.04, 0.82, 0.16, 0.9, 0.4, '#a4b07a', 0.1],
-    [-2.74, 1.08, 0.8, 0.22, 1.08, 0.44, '#6a4c93', 0.01],
-    [2.02, 1.08, 0.79, 0.22, 1.06, 0.42, '#ba7043', -0.04],
-    [2.3, 1.08, 0.8, 0.18, 1.18, 0.42, '#355070', 0.07],
-    [2.55, 1.11, 0.82, 0.28, 1.3, 0.5, '#cb997e', 0.03],
-    [2.91, 1.07, 0.81, 0.2, 0.96, 0.44, '#b5838d', -0.1],
-  ] as const
-
-  const upperBooks = [
-    [-0.72, 6.12, 0.64, 0.2, 1.08, 0.38, '#d77a61', -0.08],
-    [-0.44, 6.12, 0.64, 0.16, 0.9, 0.34, '#e9c46a', 0.06],
-    [-0.2, 6.12, 0.65, 0.2, 1.2, 0.36, '#4d6c73', 0.03],
-    [0.08, 6.12, 0.65, 0.16, 0.92, 0.34, '#7c5c93', -0.1],
-    [0.32, 6.12, 0.65, 0.24, 1.14, 0.38, '#9c6644', 0.02],
-    [0.65, 6.12, 0.66, 0.18, 0.98, 0.36, '#6b8f71', 0.08],
-  ] as const
-
+function SingleBook() {
   return (
-    <>
-      {lowerBooks.map(([x, y, z, w, h, d, color, tilt], index) => (
-        <Book
-          key={`lower-${index}`}
-          position={[x, y, z]}
-          size={[w, h, d]}
-          color={color}
-          tilt={tilt}
-          draggable={index < 2}
-        />
-      ))}
-      {upperBooks.map(([x, y, z, w, h, d, color, tilt], index) => (
-        <Book
-          key={`upper-${index}`}
-          position={[x, y, z]}
-          size={[w, h, d]}
-          color={color}
-          tilt={tilt}
-        />
-      ))}
-    </>
+    <Book
+      position={[2.05, 0.86, 0.72]}
+      size={[0.28, 1.12, 0.48]}
+      color="#6b4a36"
+      tilt={-0.06}
+      draggable
+    />
   )
 }
 
@@ -546,248 +497,38 @@ function Lamp({
   )
 }
 
-function Dino({
-  lighting,
-  onClick,
-}: {
-  lighting: LightingSample
-  onClick: () => void
-}) {
-  const [hovered, setHovered] = useState(false)
-  const [excited, setExcited] = useState(false)
-  const group = useRef<THREE.Group>(null)
-  const head = useRef<THREE.Mesh>(null)
-
-  useFrame((state, delta) => {
-    if (!group.current) {
-      return
-    }
-
-    const bounce = Math.sin(state.clock.elapsedTime * (excited ? 7 : 2.4)) * 0.03
-    group.current.position.y = 0.72 + bounce
-    group.current.rotation.y = THREE.MathUtils.lerp(
-      group.current.rotation.y,
-      hovered || excited ? 0.55 : 0.3,
-      1 - Math.exp(-delta * 5),
-    )
-    group.current.rotation.x = THREE.MathUtils.lerp(
-      group.current.rotation.x,
-      excited ? -0.12 : 0,
-      1 - Math.exp(-delta * 5),
-    )
-    if (head.current) {
-      head.current.rotation.z = THREE.MathUtils.lerp(
-        head.current.rotation.z,
-        excited ? -0.28 : 0.08,
-        1 - Math.exp(-delta * 9),
-      )
-    }
-  })
-
-  useEffect(() => {
-    if (!excited) {
-      return undefined
-    }
-
-    const timeout = window.setTimeout(() => setExcited(false), 900)
-    return () => window.clearTimeout(timeout)
-  }, [excited])
-
+function Typewriter() {
   return (
-    <group
-      ref={group}
-      position={[-3.25, 0.72, 0.8]}
-      scale={[1.12, 1.12, 1.12]}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-      onClick={() => {
-        setExcited(true)
-        onClick()
-      }}
-    >
-      <mesh position={[-0.42, 0.1, 0.02]} rotation={[0.04, 0.08, 0.25]} castShadow>
-        <capsuleGeometry args={[0.24, 1.18, 8, 16]} />
-        <meshStandardMaterial color="#8a715e" roughness={0.95} />
+    <group position={[-2.65, 0.84, 0.74]} rotation={[0, 0.22, 0]} scale={[1.05, 1.05, 1.05]}>
+      <mesh castShadow receiveShadow>
+        <boxGeometry args={[1.68, 0.42, 0.88]} />
+        <meshStandardMaterial color="#2a2424" roughness={0.74} />
       </mesh>
-      <mesh position={[0.32, 0.48, 0.08]} rotation={[0, 0, -0.18]} castShadow>
-        <capsuleGeometry args={[0.13, 0.66, 8, 14]} />
-        <meshStandardMaterial color="#91806d" roughness={0.92} />
+      <mesh position={[0, 0.23, -0.16]} rotation={[-0.4, 0, 0]} castShadow>
+        <boxGeometry args={[1.48, 0.16, 0.52]} />
+        <meshStandardMaterial color="#31292a" roughness={0.7} />
       </mesh>
-      <mesh ref={head} position={[0.74, 0.78, 0.08]} rotation={[0.1, 0, 0.08]} castShadow>
-        <sphereGeometry args={[0.22, 20, 20]} />
-        <meshStandardMaterial color="#8f7763" roughness={0.92} />
+      <mesh position={[0, 0.38, -0.3]} castShadow>
+        <cylinderGeometry args={[0.09, 0.09, 1.42, 28]} />
+        <meshStandardMaterial color="#484445" metalness={0.18} roughness={0.5} />
       </mesh>
-      <mesh position={[0.92, 0.78, 0.16]} rotation={[0, 0, 0.2]} castShadow>
-        <coneGeometry args={[0.09, 0.3, 16]} />
-        <meshStandardMaterial color="#eee4cf" roughness={0.84} />
+      <mesh position={[0, 0.58, -0.18]} rotation={[-0.18, 0, 0]} castShadow>
+        <planeGeometry args={[1.08, 0.72]} />
+        <meshStandardMaterial color="#f0e5d0" roughness={0.94} />
       </mesh>
-      <mesh position={[0.18, 0.02, 0.22]} rotation={[0.1, 0, 0.16]} castShadow>
-        <capsuleGeometry args={[0.06, 0.48, 6, 12]} />
-        <meshStandardMaterial color="#655147" roughness={0.92} />
-      </mesh>
-      <mesh position={[0.54, 0.02, -0.02]} rotation={[0.08, 0, -0.18]} castShadow>
-        <capsuleGeometry args={[0.06, 0.48, 6, 12]} />
-        <meshStandardMaterial color="#655147" roughness={0.92} />
-      </mesh>
-      <mesh position={[-0.08, 0.1, -0.18]} rotation={[0.04, 0, -0.22]} castShadow>
-        <capsuleGeometry args={[0.06, 0.52, 6, 12]} />
-        <meshStandardMaterial color="#655147" roughness={0.92} />
-      </mesh>
-      <mesh position={[-0.62, 0.46, -0.02]} rotation={[0.18, 0.1, 1.18]} castShadow>
-        <capsuleGeometry args={[0.1, 0.88, 8, 14]} />
-        <meshStandardMaterial color="#7f6656" roughness={0.95} />
-      </mesh>
-      <mesh position={[0.82, 0.89, 0.28]}>
-        <sphereGeometry args={[0.03, 12, 12]} />
-        <meshBasicMaterial color={lighting.accent} />
-      </mesh>
-      <ShadowPlane position={[0.18, -0.08, 0.02]} size={[2.2, 0.84]} opacity={0.14} />
-    </group>
-  )
-}
-
-function Totem({ lighting }: { lighting: LightingSample }) {
-  return (
-    <Float speed={1.2} rotationIntensity={0.12} floatIntensity={0.2}>
-      <group position={[4.65, 0.82, 0.92]} rotation={[0, -0.4, 0]} scale={[1.08, 1.08, 1.08]}>
-        <mesh castShadow>
-          <capsuleGeometry args={[0.18, 0.42, 8, 14]} />
-          <meshStandardMaterial color="#cb8355" roughness={0.68} />
-        </mesh>
-        <mesh position={[0, 0.33, 0]} castShadow>
-          <sphereGeometry args={[0.22, 24, 24]} />
-          <meshStandardMaterial color="#8bba6f" roughness={0.7} />
-        </mesh>
-        <mesh position={[-0.13, 0.53, 0]} castShadow>
-          <sphereGeometry args={[0.1, 18, 18]} />
-          <meshStandardMaterial color="#7dad5c" roughness={0.7} />
-        </mesh>
-        <mesh position={[0.13, 0.53, 0]} castShadow>
-          <sphereGeometry args={[0.1, 18, 18]} />
-          <meshStandardMaterial color="#7dad5c" roughness={0.7} />
-        </mesh>
-        <mesh position={[0, 0.34, 0.2]}>
-          <sphereGeometry args={[0.045, 12, 12]} />
-          <meshBasicMaterial color={lighting.glow} />
-        </mesh>
-        <ShadowPlane position={[0, -0.14, 0.02]} size={[0.82, 0.42]} opacity={0.12} />
-      </group>
-    </Float>
-  )
-}
-
-function CompanionBot({
-  lighting,
-  onClick,
-}: {
-  lighting: LightingSample
-  onClick: () => void
-}) {
-  const [waving, setWaving] = useState(false)
-  const arm = useRef<THREE.Mesh>(null)
-
-  useEffect(() => {
-    if (!waving) {
-      return undefined
-    }
-    const timeout = window.setTimeout(() => setWaving(false), 1200)
-    return () => window.clearTimeout(timeout)
-  }, [waving])
-
-  useFrame((state) => {
-    if (!arm.current) {
-      return
-    }
-    arm.current.rotation.z = waving
-      ? Math.sin(state.clock.elapsedTime * 12) * 0.7
-      : 0.18
-  })
-
-  return (
-    <group
-      position={[3.92, 0.84, 0.68]}
-      scale={[1.08, 1.08, 1.08]}
-      onClick={() => {
-        setWaving(true)
-        onClick()
-      }}
-    >
-      <mesh castShadow>
-        <capsuleGeometry args={[0.15, 0.38, 8, 14]} />
-        <meshStandardMaterial color="#7b89cc" roughness={0.46} />
-      </mesh>
-      <mesh position={[0, 0.32, 0]} castShadow>
-        <sphereGeometry args={[0.18, 22, 22]} />
-        <meshStandardMaterial color="#f0ddc4" roughness={0.52} />
-      </mesh>
-      <mesh ref={arm} position={[0.24, 0.08, 0]} rotation={[0, 0, 0.18]} castShadow>
-        <capsuleGeometry args={[0.035, 0.28, 6, 12]} />
-        <meshStandardMaterial color="#f0ddc4" roughness={0.52} />
-      </mesh>
-      <mesh position={[-0.24, 0.04, 0]} rotation={[0, 0, -0.22]} castShadow>
-        <capsuleGeometry args={[0.035, 0.28, 6, 12]} />
-        <meshStandardMaterial color="#f0ddc4" roughness={0.52} />
-      </mesh>
-      <pointLight position={[0, 0.24, 0.18]} color={lighting.glow} intensity={0.12} distance={2} />
-      <ShadowPlane position={[0, -0.18, 0.02]} size={[0.74, 0.38]} opacity={0.12} />
-    </group>
-  )
-}
-
-function Plant({ onClick }: { onClick: () => void }) {
-  const [wiggling, setWiggling] = useState(false)
-  const leaves = useRef<THREE.Group>(null)
-
-  useEffect(() => {
-    if (!wiggling) {
-      return undefined
-    }
-    const timeout = window.setTimeout(() => setWiggling(false), 1100)
-    return () => window.clearTimeout(timeout)
-  }, [wiggling])
-
-  useFrame((state) => {
-    if (!leaves.current) {
-      return
-    }
-    leaves.current.rotation.z = wiggling
-      ? Math.sin(state.clock.elapsedTime * 11) * 0.18
-      : Math.sin(state.clock.elapsedTime * 0.8) * 0.03
-  })
-
-  return (
-    <group
-      position={[-1.45, 0.92, 0.72]}
-      scale={[1.08, 1.08, 1.08]}
-      onClick={() => {
-        setWiggling(true)
-        onClick()
-      }}
-    >
-      <mesh castShadow>
-        <cylinderGeometry args={[0.18, 0.24, 0.32, 20]} />
-        <meshStandardMaterial color="#936245" roughness={0.8} />
-      </mesh>
-      <group ref={leaves} position={[0, 0.26, 0]}>
-        {[
-          [0, 0.18, 0, 0],
-          [0.12, 0.12, 0.2, 0.5],
-          [-0.12, 0.14, -0.2, -0.5],
-          [0.08, 0.28, 0.3, 0.2],
-          [-0.08, 0.24, -0.3, -0.2],
-        ].map(([x, y, z, rot], index) => (
+      {Array.from({ length: 7 }).map((_, row) =>
+        Array.from({ length: 6 }).map((__, column) => (
           <mesh
-            key={index}
-            position={[x, y, z]}
-            rotation={[0.1, rot, rot]}
+            key={`${row}-${column}`}
+            position={[-0.58 + column * 0.23, 0.05, 0.08 + row * 0.08]}
             castShadow
           >
-            <sphereGeometry args={[0.14, 18, 18]} />
-            <meshStandardMaterial color="#6f9651" roughness={0.82} />
+            <cylinderGeometry args={[0.038, 0.042, 0.08, 14]} />
+            <meshStandardMaterial color="#d7ccb8" roughness={0.56} />
           </mesh>
-        ))}
-      </group>
-      <ShadowPlane position={[0, -0.14, 0.02]} size={[0.8, 0.4]} opacity={0.12} />
+        )),
+      )}
+      <ShadowPlane position={[0, -0.2, 0.02]} size={[2.2, 0.86]} opacity={0.16} />
     </group>
   )
 }
@@ -875,28 +616,8 @@ function SceneContents({ config, onLampToggle }: SceneContentsProps) {
           onLampToggle()
         }}
       />
-      <Dino
-        lighting={lighting}
-        onClick={() => {
-          sound.roar()
-          setMonitorPulse((value) => value + 0.4)
-        }}
-      />
-      <Totem lighting={lighting} />
-      <CompanionBot
-        lighting={lighting}
-        onClick={() => {
-          sound.wave()
-          setMonitorPulse((value) => value + 0.22)
-        }}
-      />
-      <Plant
-        onClick={() => {
-          sound.rustle()
-          setMonitorPulse((value) => value + 0.1)
-        }}
-      />
-      <BookshelfSet />
+      <Typewriter />
+      <SingleBook />
 
       <mesh position={[0, 0.42, 0.74]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[11.5, 2.2]} />
@@ -931,7 +652,7 @@ export function RoomScene({ config, onLampToggle }: RoomSceneProps) {
     <Canvas
       shadows
       dpr={[1, 1.75]}
-      camera={{ position: [0, 2.2, 10.8], fov: 33 }}
+      camera={{ position: [0, 2.35, 12.6], fov: 29 }}
       gl={{ antialias: true }}
     >
       <SceneContents config={config} onLampToggle={onLampToggle} />

@@ -24,6 +24,7 @@ function App() {
   const [zoom, setZoom] = useState(0.26)
   const [effectsEnabled, setEffectsEnabled] = useState(true)
   const [showDebug, setShowDebug] = useState(false)
+  const [panelOpen, setPanelOpen] = useState(true)
   const lighting = sampleLighting(timeValue)
   const lampOverlay = lampOn ? lighting.practicalIntensity * 0.16 : 0
 
@@ -91,127 +92,135 @@ function App() {
             onLampToggle={() => setLampOn((value) => !value)}
           />
         </div>
-        <section className="control-panel">
-          <div className="panel-copy">
-            <p className="eyebrow">Window Room Lab</p>
-            <h1>Interactive light-study starter for a live 3D room.</h1>
-            <p className="lede">
-              The room, props, and window light all respond to time of day. Swap
-              the outside art later, keep the camera rig and lighting system now.
-            </p>
-          </div>
-
-          <div className="panel-group">
-            <div className="panel-heading">
-              <span>Time of day</span>
-              <button
-                className={`mode-toggle ${timeMode === 'auto' ? 'is-auto' : ''}`}
-                type="button"
-                onClick={handleTimeModeToggle}
-              >
-                {timeMode === 'auto' ? 'Auto synced' : 'Manual override'}
-              </button>
+        <button
+          className="panel-toggle"
+          type="button"
+          onClick={() => setPanelOpen((value) => !value)}
+        >
+          {panelOpen ? 'Hide settings' : 'Show settings'}
+        </button>
+        {panelOpen ? (
+          <section className="control-panel">
+            <div className="panel-copy">
+              <p className="eyebrow">Window Room Lab</p>
+              <h1>Interactive light-study starter for a live 3D room.</h1>
+              <p className="lede">
+                The room, props, and window light respond to time of day. The
+                scene is pared back to a focused desk setup so the window view can
+                breathe.
+              </p>
             </div>
 
-            <div className="preset-row">
-              {presetOrder.map((preset) => (
+            <div className="panel-group">
+              <div className="panel-heading">
+                <span>Time of day</span>
                 <button
-                  key={preset}
-                  className={`preset-chip ${
-                    activePreset === preset ? 'is-active' : ''
-                  }`}
+                  className={`mode-toggle ${timeMode === 'auto' ? 'is-auto' : ''}`}
                   type="button"
-                  onClick={() => applyPreset(preset)}
+                  onClick={handleTimeModeToggle}
                 >
-                  {PRESET_LABELS[preset]}
+                  {timeMode === 'auto' ? 'Auto synced' : 'Manual override'}
                 </button>
-              ))}
-            </div>
-
-            <label className="slider-field">
-              <span>
-                Timeline
-                <strong>{Math.round(timeValue * 100)}%</strong>
-              </span>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.001"
-                value={timeValue}
-                onChange={handleSliderChange}
-              />
-            </label>
-
-            <label className="slider-field">
-              <span>
-                Zoom
-                <strong>{zoom.toFixed(2)}</strong>
-              </span>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={zoom}
-                onChange={(event) => setZoom(Number(event.target.value))}
-              />
-            </label>
-          </div>
-
-          <div className="panel-group">
-            <div className="panel-heading">
-              <span>Scene tuning</span>
-              <button
-                className="quiet-toggle"
-                type="button"
-                onClick={() => setShowDebug((value) => !value)}
-              >
-                {showDebug ? 'Hide debug' : 'Show debug'}
-              </button>
-            </div>
-
-            {showDebug ? (
-              <div className="debug-grid">
-                <label className="slider-field">
-                  <span>
-                    Parallax
-                    <strong>{parallaxStrength.toFixed(2)}</strong>
-                  </span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1.4"
-                    step="0.01"
-                    value={parallaxStrength}
-                    onChange={(event) =>
-                      setParallaxStrength(Number(event.target.value))
-                    }
-                  />
-                </label>
-
-                <label className="checkbox-row">
-                  <input
-                    type="checkbox"
-                    checked={effectsEnabled}
-                    onChange={(event) => setEffectsEnabled(event.target.checked)}
-                  />
-                  <span>Post effects and bloom</span>
-                </label>
               </div>
-            ) : null}
-          </div>
 
-          <div className="panel-group panel-notes">
-            <p>Interactive props</p>
-            <ul>
-              <li>Click the lamp to toggle practical light.</li>
-              <li>Click the monitor to cycle its screen glow.</li>
-              <li>Click the dinosaur to make it perk up and roar.</li>
-              <li>Click the bot and plant, or drag the loose books.</li>
-            </ul>
-          </div>
-        </section>
+              <div className="preset-row">
+                {presetOrder.map((preset) => (
+                  <button
+                    key={preset}
+                    className={`preset-chip ${
+                      activePreset === preset ? 'is-active' : ''
+                    }`}
+                    type="button"
+                    onClick={() => applyPreset(preset)}
+                  >
+                    {PRESET_LABELS[preset]}
+                  </button>
+                ))}
+              </div>
+
+              <label className="slider-field">
+                <span>
+                  Timeline
+                  <strong>{Math.round(timeValue * 100)}%</strong>
+                </span>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.001"
+                  value={timeValue}
+                  onChange={handleSliderChange}
+                />
+              </label>
+
+              <label className="slider-field">
+                <span>
+                  Zoom
+                  <strong>{zoom.toFixed(2)}</strong>
+                </span>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={zoom}
+                  onChange={(event) => setZoom(Number(event.target.value))}
+                />
+              </label>
+            </div>
+
+            <div className="panel-group">
+              <div className="panel-heading">
+                <span>Scene tuning</span>
+                <button
+                  className="quiet-toggle"
+                  type="button"
+                  onClick={() => setShowDebug((value) => !value)}
+                >
+                  {showDebug ? 'Hide debug' : 'Show debug'}
+                </button>
+              </div>
+
+              {showDebug ? (
+                <div className="debug-grid">
+                  <label className="slider-field">
+                    <span>
+                      Parallax
+                      <strong>{parallaxStrength.toFixed(2)}</strong>
+                    </span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1.4"
+                      step="0.01"
+                      value={parallaxStrength}
+                      onChange={(event) =>
+                        setParallaxStrength(Number(event.target.value))
+                      }
+                    />
+                  </label>
+
+                  <label className="checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={effectsEnabled}
+                      onChange={(event) => setEffectsEnabled(event.target.checked)}
+                    />
+                    <span>Post effects and bloom</span>
+                  </label>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="panel-group panel-notes">
+              <p>Interactive props</p>
+              <ul>
+                <li>Click the lamp to toggle practical light.</li>
+                <li>Click the monitor to cycle its screen glow.</li>
+              </ul>
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   )
